@@ -7,7 +7,7 @@ export const generateAccessToken = (user, id) => {
       username: user,
     },
     process.env.ACCESS_TOKEN_KEY,
-    { expiresIn: "15s" }
+    { expiresIn: "15m" }
   );
 
   return access_token;
@@ -33,13 +33,12 @@ export const verifyAccessToken = (req, res) => {
     jwt.verify(token, process.env.ACCESS_TOKEN_KEY, function (err, decoded) {
       //genereate new pair of access token and refresh token
       if (decoded) {
-        const user = decoded.username;
-        const id = decoded.userId;
-        const refresh_token = generateRefreshToken(user, id);
-        const access_token = generateAccessToken(user, id);
-        res.send(access_token);
         //locate user in DB and save the new refresh token
+        const current_user = UserProfile.findOne({
+          username: decoded.username,
+        });
         //save refresh token in cookie
+        saveUserAndCookie(req, res, current_user);
       } else {
         res.send("token expired");
       }
@@ -51,7 +50,16 @@ export const verifyAccessToken = (req, res) => {
 
 export const verifyRefreshToken = (token) => {
   jwt.verify(token, process.env.REFRESH_TOKEN_KEY, function (err, decoded) {
-    console.log(decoded);
+    if (decoded) {
+      //locate user in DB and save the new refresh token
+      const current_user = UserProfile.findOne({
+        username: decoded.username,
+      });
+      //save refresh token in cookie
+      saveUserAndCookie(req, res, current_user);
+    } else {
+      res.send("token expired");
+    }
   });
 };
 
@@ -67,7 +75,9 @@ export const saveUserAndCookie = (req, res, current_user) => {
       current_user.username,
       current_user._id
     );
+
     current_user.refreshToken = refresh_token;
+
     res
       .cookie("jwt", refresh_token, {
         httpOnly: true,
@@ -80,7 +90,7 @@ export const saveUserAndCookie = (req, res, current_user) => {
 
     current_user.save();
 
-    return current_user;
+    return access_token;
   } catch (error) {
     return error;
   }
