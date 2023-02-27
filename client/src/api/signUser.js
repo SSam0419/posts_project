@@ -1,39 +1,34 @@
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { access_token } from "../slice/userSlice";
 
 const baseURL = "http://localhost:5000";
 
-export const userApi = () =>
-  axios.create({
-    baseURL: "http://localhost:5000/users",
-  });
-
-export const signIn = (user) => {
+export const signIn = async (user) => {
   axios.defaults.withCredentials = true;
   const url = baseURL + "/users/sign_in";
-  if (user) {
-    axios
-      .post(
-        url,
-        {
-          username: user.username,
-          password: user.password,
+
+  const result = await axios
+    .post(
+      url,
+      {
+        username: user.username,
+        password: user.password,
+      },
+      {
+        headers: {
+          "content-type": "application/json",
         },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      )
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  } else {
-    console.log(user);
-  }
-  console.log(user);
+      }
+    )
+    .then(function (response) {
+      return response.data.access_token;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  return result;
 };
 
 export const signUp = (user, setDuplicateUser, setSignIn) => {

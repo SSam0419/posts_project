@@ -1,0 +1,10 @@
+.DiscussionBoardPage {
+  padding: 10px 30px;
+  position: relative;
+}
+.card_container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}

@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import * as dotenv from "dotenv";
 
 import userRoutes from "./routes/user.js";
+import postRoutes from "./routes/post.js";
 
 const corsOptions = {
   origin: "http://localhost:3000",
@@ -35,8 +36,9 @@ mongoose
 
 // mongoose.set("useFindAndModify", false);
 
-app.use("/users", userRoutes);
-
 app.get("/", (req, res) => {
   res.send("This is Homepage...");
 });
+
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);

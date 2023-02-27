@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FORM_DATA } from "../actions/constant";
 import "./SignIn.css";
 import { signIn, userApi } from "../api/signUser";
 import axios from "axios";
+import { username, access_token } from "../slice/userSlice";
 
 const SignIn = ({ setSignIn }) => {
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.createUser);
+
+  const [userData, setUserData] = useState({
+    username: "",
+    password: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      signIn(userData);
+      dispatch(username(userData.username));
+      const token = await signIn(userData);
+      dispatch(access_token(token));
     } catch (error) {
       console.log(error);
     }
@@ -26,7 +32,9 @@ const SignIn = ({ setSignIn }) => {
           <input
             type={"text"}
             required
-            onChange={(e) => dispatch(FORM_DATA({ username: e.target.value }))}
+            onChange={(e) => {
+              setUserData((prev) => ({ ...prev, username: e.target.value }));
+            }}
           ></input>
           <span></span>
           <label>Username</label>
@@ -35,7 +43,9 @@ const SignIn = ({ setSignIn }) => {
           <input
             type={"password"}
             required
-            onChange={(e) => dispatch(FORM_DATA({ password: e.target.value }))}
+            onChange={(e) => {
+              setUserData((prev) => ({ ...prev, password: e.target.value }));
+            }}
           ></input>
           <span></span>
           <label>Password</label>
@@ -43,7 +53,7 @@ const SignIn = ({ setSignIn }) => {
         <div className="forget_password">Forget Password?</div>
         <input type={"submit"} value={"Login"} />
         <div>
-          Not a member?{" "}
+          Not a member?
           <span
             className="direct_to_sign_up"
             onClick={() => {

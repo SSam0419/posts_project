@@ -1,37 +1,31 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
-import allReducers from "./reducers";
 import Nav from "./components/Nav";
 import Home from "./pages/Home";
 import Protected from "./components/Protected";
 import CreateUser from "./pages/CreateUser";
+import { selectUser } from "./slice/userSlice";
+import NotFound from "./pages/NotFound";
+import DiscussionBoardPage from "./pages/DiscussionBoardPage";
+import DiscussionPostPage from "./pages/DiscussionPostPage";
 
 function App() {
-  const isLogged = useSelector((state) => state.isLogged);
+  const user = useSelector(selectUser);
+  const isLogged = user.isLoggedIn;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   return (
     <div>
       <Nav />
-      <button
-        onClick={() => {
-          dispatch({ type: "SIGN_IN" });
-          navigate("/home");
-        }}
-      >
-        <h1>++++++</h1>
-      </button>
+      <div className="space"></div>
       <Routes>
-        <Route path="/" element={<CreateUser />} />
-        <Route
-          path="/home"
-          element={
-            <Protected isLogged={isLogged}>
-              <Home />
-            </Protected>
-          }
-        />
+        <Route path="/" element={<Home />} />
+        <Route path="/sign_in" element={<CreateUser />} />
+        <Route path="/post" element={<DiscussionBoardPage />}>
+          <Route path=":post_id" element={<DiscussionPostPage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
