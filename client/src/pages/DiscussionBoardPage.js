@@ -8,9 +8,11 @@ import {
   selectAllPosts,
   getPostsError,
   getPostsStatus,
-  fetchAllPosts,
+  fetchPostsWithLimit,
 } from "../slice/postSlice";
 import { Outlet } from "react-router-dom";
+import PropagateSpinner from "../components/PropagateSpinner";
+import CreatePostBtn from "../components/CreatePostBtn";
 
 const DiscussionBoardPage = () => {
   const dispatch = useDispatch();
@@ -20,20 +22,21 @@ const DiscussionBoardPage = () => {
 
   useEffect(() => {
     if (postStatus === "idle") {
-      dispatch(fetchAllPosts());
+      dispatch(fetchPostsWithLimit());
     }
   }, [postStatus, dispatch]);
 
   return (
     <div className="DiscussionBoardPage">
       <ToolBar />
+      {postStatus === "idle" && <PropagateSpinner />}
       <div className="card_container">
-        {postStatus === "idle" && <p>loading...</p>}
         {posts.length > 0 &&
           posts?.map((post, idx) => {
             return <DiscussionPostCard post={post} key={idx} />;
           })}
       </div>
+      <CreatePostBtn />
       <Outlet />
     </div>
   );

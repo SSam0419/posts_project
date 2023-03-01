@@ -10,11 +10,14 @@ import NotFound from "./pages/NotFound";
 import DiscussionBoardPage from "./pages/DiscussionBoardPage";
 import DiscussionPostPage from "./pages/DiscussionPostPage";
 
+import { useState } from "react";
+
 function App() {
   const user = useSelector(selectUser);
   const isLogged = user.isLoggedIn;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   return (
     <div>
       <Nav />

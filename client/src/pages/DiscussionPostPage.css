@@ -16,12 +16,16 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: grid;
-  grid-template-rows: 20% 2.5% 55% 2.5% 20%;
   background-color: #ffffff;
   box-shadow: 0px 0px 18px 0px rgba(0, 0, 0, 0.75);
   border-radius: 8px;
   padding: 10px 30px;
+}
+
+.DiscussionPostPage .container {
+  display: grid;
+  grid-template-rows: 20% 2.5% 55% 2.5% 20%;
+  height: 100%;
 }
 
 .DiscussionPostPage .header {
@@ -44,8 +48,4 @@
 .DiscussionPostPage button:hover {
   cursor: pointer;
   background: #f0f0f0;
-}
-
-.DiscussionPostPage .content {
-  overflow-y: scroll;
 }

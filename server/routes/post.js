@@ -6,7 +6,7 @@ const router = exrpess.Router();
 router.get("/", (req, res) => {
   res.send("Getting post route...");
 });
-router.get("/get_all_posts", getAllPosts);
+router.post("/get_posts_with_limit", getAllPosts);
 router.post("/get_post_by_id", getPostById);
 router.post("/create_post", createPost);
 

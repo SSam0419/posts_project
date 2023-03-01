@@ -2,8 +2,20 @@ import PostProfile from "../models/post_profile.js";
 
 export const getAllPosts = async (req, res) => {
   try {
-    const allPosts = await PostProfile.find({});
-    console.log(allPosts);
+    // const allPosts = await PostProfile.find({});
+    const from = req.body.from;
+    const to = req.body.to;
+    const allPosts = await PostProfile.find(
+      {},
+      {},
+      {
+        skip: from, // Starting Row
+        limit: to, // Ending Row
+        sort: {
+          createdAt: -1, //Sort by Date Added DESC
+        },
+      }
+    );
     res.send(allPosts);
   } catch (error) {
     console.log(error);
@@ -28,8 +40,8 @@ export const createPost = (req, res) => {
 
 export const getPostById = async (req, res) => {
   try {
+    console.log(req.body.id);
     const foundPost = await PostProfile.findById(req.body.id).exec();
-    console.log(foundPost);
     res.send(foundPost);
   } catch (error) {
     console.log(error);

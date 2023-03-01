@@ -3,17 +3,15 @@
   padding: 30px;
   height: 350px;
   width: 300px;
-  border-radius: 30px;
+  border-radius: 10px;
   display: grid;
   grid-template-rows: 20% 2.5% 55% 2.5% 20%;
 }
 .DiscussionPostCard:hover {
-  box-shadow: rgba(100, 100, 111, 0.4) 0px 7px 29px 0px;
+  border: 2px solid black;
   cursor: pointer;
 }
-.DiscussionPostCard:active {
-  transform: scale(0.95);
-}
+
 .content {
   margin: 5px 0;
 }
@@ -48,6 +46,7 @@
   display: flex;
   gap: 5px;
 }
+
 .like_btn:hover {
   animation: bounce 0.5s;
   animation-iteration-count: infinite;

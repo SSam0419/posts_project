@@ -1,0 +1,16 @@
+.CreatePostBtn {
+  position: fixed;
+  bottom: 5%;
+  right: 1.5%;
+  opacity: 1;
+  transition: 0.125s ease-in;
+}
+.CreatePostBtn:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+.CreatePostBtn:active {
+  opacity: 1;
+  transition: 2.25s ease-out;
+  transition-duration: 0.4s;
+}
