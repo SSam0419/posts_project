@@ -5,13 +5,14 @@ import Overlay from "./Overlay.js";
 import ClipLoader from "react-spinners/ClipLoader";
 
 import RichTextEditor from "./RichTextEditor.js";
+import { createPost } from "../slice/postSlice";
+import { useDispatch } from "react-redux";
 
 const CreatePostForm = () => {
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  useEffect(() => {
-    console.log(content);
-  }, [content]);
+  const dispatch = useDispatch();
 
   const override = {
     display: "flex",
@@ -19,13 +20,27 @@ const CreatePostForm = () => {
     alignItem: "center",
   };
   const str = "<p>haha</p>";
+
+  const submitHandler = (e) => {
+    console.log(title);
+    console.log(content);
+    dispatch(createPost({ title, content }));
+  };
+
   return (
     <Overlay>
       <div className="CreatePostForm">
         <div dangerouslySetInnerHTML={{ __html: str }} />
-        <form>
+        <form onSubmit={(e) => submitHandler(e)}>
           <label htmlFor="title">Title</label>
-          <input id="title" type={"text"}></input>
+          <input
+            id="title"
+            type={"text"}
+            required
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          ></input>
           <label htmlFor="content">Content</label>
           <div className="editor">
             <RichTextEditor content={content} setContent={setContent} />

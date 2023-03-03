@@ -10,13 +10,15 @@ import NotFound from "./pages/NotFound";
 import DiscussionBoardPage from "./pages/DiscussionBoardPage";
 import DiscussionPostPage from "./pages/DiscussionPostPage";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useAccessToken from "./hook/useAccessToken";
 
 function App() {
   const user = useSelector(selectUser);
   const isLogged = user.isLoggedIn;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useAccessToken();
 
   return (
     <div>

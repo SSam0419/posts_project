@@ -1,17 +1,13 @@
-import { verifyAccessToken, verifyRefreshToken } from "../api/signUser";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie";
-import { selectUser } from "../slice/userSlice";
+import { verifyAccessToken } from "../api/signUser";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser, setUserProfile } from "../slice/userSlice";
 
-export default useAccessToken = () => {
+const useAccessToken = async () => {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const access_token = user.access_token;
-  const result = verifyAccessToken(access_token);
-  if (result === "token expired") {
-    // retrieve refresh token from cookie
-    const current_refresh_token = Cookies.get("jwt");
-    const verify = verifyRefreshToken(current_refresh_token);
-  } else {
-    // request new pair
-  }
+  const access_token = user.userProfile.access_token;
+  const result = await verifyAccessToken(access_token);
+  dispatch(setUserProfile(result));
 };
+
+export default useAccessToken;

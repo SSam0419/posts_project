@@ -9,8 +9,8 @@ const postSchema = mongoose.Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
   content: { type: String, required: true },
-  likes: [{ type: String }],
-  views: [{ type: String }],
+  likes: [String],
+  views: [String],
   createdAt: {
     type: Date,
     default: new Date(),
@@ -20,7 +20,7 @@ const postSchema = mongoose.Schema({
       author: { type: String, required: true },
       content: { type: String, required: true },
       date: { type: Date, default: new Date() },
-      likes: [{ type: String }],
+      likes: [String],
     },
   ],
 });

@@ -7,6 +7,7 @@ import * as dotenv from "dotenv";
 
 import userRoutes from "./routes/user.js";
 import postRoutes from "./routes/post.js";
+import authRoutes from "./routes/auth.js";
 
 const corsOptions = {
   origin: "http://localhost:3000",
@@ -42,3 +43,4 @@ app.get("/", (req, res) => {
 
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+app.use("/auth", authRoutes);

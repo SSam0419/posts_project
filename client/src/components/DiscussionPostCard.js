@@ -28,7 +28,8 @@ const DiscussionPostCard = (post) => {
         <span className="author">{post.post.author}</span>
       </div>
       <div className="line"></div>
-      <div className="content">{content}</div>
+      <div className="content" dangerouslySetInnerHTML={{ __html: content }} />
+      {/* <div className="content">{content}</div> */}
       <div className="line"></div>
       <div className="footer">
         <div>

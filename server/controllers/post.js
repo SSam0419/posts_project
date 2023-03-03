@@ -48,3 +48,16 @@ export const getPostById = async (req, res) => {
     res.send(error);
   }
 };
+
+export const addComment = async (req, res) => {
+  const body = req.body.comment;
+  const result = await PostProfile.updateOne(
+    { _id: req.body.id },
+    {
+      $push: {
+        comments: { $each: [body], $position: 0 },
+      },
+    }
+  );
+  res.send(result);
+};

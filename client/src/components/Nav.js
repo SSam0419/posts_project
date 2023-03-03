@@ -29,8 +29,8 @@ const Nav = () => {
         <CustomLink to="/post">About</CustomLink>
       </ul>
       <div className="user_account_avator">
-        {user.isLoggedIn && user.username}
-        {!user.isLoggedIn && <Link to="/sign_in">Sign in</Link>}
+        {user.userProfile?.isLoggedIn && user.userProfile?.username}
+        {!user.userProfile.isLoggedIn && <Link to="/sign_in">Sign in</Link>}
       </div>
     </nav>
   );

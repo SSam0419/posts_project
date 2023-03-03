@@ -9,9 +9,8 @@
 }
 
 .DiscussionPostPage {
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
-  height: 80%;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -24,8 +23,8 @@
 
 .DiscussionPostPage .container {
   display: grid;
-  grid-template-rows: 20% 2.5% 55% 2.5% 20%;
   height: 100%;
+  gap: 30px;
 }
 
 .DiscussionPostPage .header {
@@ -48,4 +47,53 @@
 .DiscussionPostPage button:hover {
   cursor: pointer;
   background: #f0f0f0;
+}
+.DiscussionPostPage .comment_form {
+  width: 100%;
+  display: flex;
+  margin: 0;
+  outline: 1px solid #c1c1c1;
+  padding: 0;
+  height: 40px;
+  margin: 0 auto;
+  max-width: 1000px;
+}
+.DiscussionPostPage .comment_form button[type="submit"] {
+  background-color: #007acc;
+  color: white;
+  border-radius: 0;
+}
+.DiscussionPostPage .comment_form input[type="text"] {
+  width: 100%;
+  border: none;
+  padding: 5px 10px;
+  outline: none;
+}
+
+.DiscussionPostPage .comments_container {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.DiscussionPostPage .comment_card {
+  border: 1px solid black;
+  margin: 20px 0;
+  padding: 30px;
+}
+
+.DiscussionPostPage .comment_card .header {
+  font-size: 0.5rem;
+}
+.DiscussionPostPage .comment_card .comment_content {
+  margin: 5px 0;
+}
+.DiscussionPostPage .comment_card .comment_likes {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+.DiscussionPostPage .comment_card .header,
+.DiscussionPostPage .comment_card .comment_likes {
+  color: rgb(77, 77, 77);
 }

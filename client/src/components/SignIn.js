@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./SignIn.css";
-import { signIn, userApi } from "../api/signUser";
-import axios from "axios";
-import { username, access_token } from "../slice/userSlice";
+import { signIn, selectUser } from "../slice/userSlice";
 
 const SignIn = ({ setSignIn }) => {
   const dispatch = useDispatch();
-
+  const userProfile = useSelector(selectUser);
   const [userData, setUserData] = useState({
     username: "",
     password: "",
@@ -16,9 +14,7 @@ const SignIn = ({ setSignIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(username(userData.username));
-      const token = await signIn(userData);
-      dispatch(access_token(token));
+      dispatch(signIn(userData));
     } catch (error) {
       console.log(error);
     }
@@ -49,6 +45,12 @@ const SignIn = ({ setSignIn }) => {
           ></input>
           <span></span>
           <label>Password</label>
+        </div>
+        <div className="warning">
+          {userProfile.error == "wrong username" && "wrong username"}
+        </div>
+        <div className="warning">
+          {userProfile.error == "wrong password" && "wrong password"}
         </div>
         <div className="forget_password">Forget Password?</div>
         <input type={"submit"} value={"Login"} />

@@ -4,14 +4,14 @@ import { saveUserAndCookie } from "./auth.js";
 
 export const sign_in = async (req, res) => {
   const { username, password } = req.body;
-  console.log(req.body);
+  console.log(`${username} is signing in ... `);
   try {
     const current_user = await UserProfile.findOne({
       username: username,
     });
     if (!current_user) {
       console.log("username not exist. ");
-      return res.send(`username ${username} not exist. `);
+      return res.status(400).send("wrong username"); //wrong username
     } else {
       const is_password_correct = await bcrypt.compare(
         password,
@@ -29,7 +29,7 @@ export const sign_in = async (req, res) => {
           return next(error);
         }
       } else {
-        return res.send("Wrong password.");
+        return res.status(400).send("wrong password"); //wrong password
       }
     }
   } catch (error) {

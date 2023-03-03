@@ -61,11 +61,11 @@ export const signUp = (user, setDuplicateUser, setSignIn) => {
   }
 };
 
-export const verifyAccessToken = (token) => {
+export const verifyAccessToken = async (token) => {
   axios.defaults.withCredentials = true;
-  const url = baseURL + "/users/auth/access_token";
-  if (token) {
-    axios
+  const url = baseURL + "/auth/access_token";
+  try {
+    const data = await axios
       .post(
         url,
         {
@@ -83,34 +83,35 @@ export const verifyAccessToken = (token) => {
       .catch(function (error) {
         console.log(error);
       });
-  } else {
-    console.log(token);
+    return data.data;
+  } catch (error) {
+    console.log(error);
   }
 };
 
-export const verifyRefreshToken = (token) => {
-  axios.defaults.withCredentials = true;
-  const url = baseURL + "/users/auth/refresh_token";
-  if (token) {
-    axios
-      .post(
-        url,
-        {
-          token: token,
-        },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      )
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  } else {
-    console.log(token);
-  }
-};
+// export const verifyRefreshToken = (token) => {
+//   axios.defaults.withCredentials = true;
+//   const url = baseURL + "/users/auth/refresh_token";
+//   if (token) {
+//     axios
+//       .post(
+//         url,
+//         {
+//           token: token,
+//         },
+//         {
+//           headers: {
+//             "content-type": "application/json",
+//           },
+//         }
+//       )
+//       .then(function (response) {
+//         return response;
+//       })
+//       .catch(function (error) {
+//         console.log(error);
+//       });
+//   } else {
+//     console.log(token);
+//   }
+// };

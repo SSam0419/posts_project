@@ -14,9 +14,4 @@ router.post("/sign_up", sign_up);
 
 router.delete("/logout", logout);
 
-router.post("/auth/access_token", verifyAccessToken);
-router.post("/auth/refresh_token", verifyRefreshToken);
-
-// router.post("/token", auth);
-
 export default router;

@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
+import UserProfile from "../models/user_profile.js";
+import cookieParser from "cookie-parser";
 
 export const generateAccessToken = (user, id) => {
+  console.log(`generating access token for ${user}`);
+  if (!user || !id) return;
   const access_token = jwt.sign(
     {
       userId: id,
@@ -14,56 +18,71 @@ export const generateAccessToken = (user, id) => {
 };
 
 export const generateRefreshToken = (user, id) => {
-  const refresh_token = jwt.sign(
-    {
-      userId: id,
-      username: user,
-    },
-    process.env.REFRESH_TOKEN_KEY,
-    { expiresIn: "14d" }
-  );
-
+  console.log(`generating refresh token for ${user}`);
+  if (!user || !id) return;
+  const payload = { username: user, id: id };
+  const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN_KEY, {
+    expiresIn: "14d",
+  });
   return refresh_token;
 };
 
-export const verifyAccessToken = (req, res) => {
-  console.log(`verifying ${req.body.token}`);
+export const verifyAccessToken = async (req, res) => {
+  // expecting input in req.body : { token : "asdfaasdvcsav"}
   const token = req.body.token;
   try {
-    jwt.verify(token, process.env.ACCESS_TOKEN_KEY, function (err, decoded) {
-      //genereate new pair of access token and refresh token
-      if (decoded) {
-        //locate user in DB and save the new refresh token
-        const current_user = UserProfile.findOne({
-          username: decoded.username,
-        });
-        //save refresh token in cookie
-        saveUserAndCookie(req, res, current_user);
-      } else {
-        res.send("token expired");
-      }
-    });
+    if (token) {
+      jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_KEY,
+        async function (err, decoded) {
+          //genereate new pair of access token and refresh token
+          if (decoded?.username) {
+            //locate user in DB and save the new refresh token
+            const current_user = await UserProfile.findOne({
+              username: decoded.username,
+            });
+            //save refresh token in cookie
+            saveUserAndCookie(req, res, current_user);
+          }
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
+    } else {
+      verifyRefreshToken(req, res);
+    }
   } catch (error) {
     console.log(error);
   }
 };
 
-export const verifyRefreshToken = (token) => {
-  jwt.verify(token, process.env.REFRESH_TOKEN_KEY, function (err, decoded) {
-    if (decoded) {
-      //locate user in DB and save the new refresh token
-      const current_user = UserProfile.findOne({
-        username: decoded.username,
-      });
-      //save refresh token in cookie
-      saveUserAndCookie(req, res, current_user);
-    } else {
-      res.send("token expired");
+export const verifyRefreshToken = async (req, res) => {
+  const token = req.cookies?.jwt;
+  console.log("refresh token: ", token);
+  jwt.verify(
+    token,
+    process.env.REFRESH_TOKEN_KEY,
+    async function (err, decoded) {
+      if (decoded) {
+        //locate user in DB and save the new refresh token
+        const current_user = await UserProfile.findOne({
+          username: decoded.username,
+        });
+        console.log("====saving user cookie====", current_user.username);
+        //save refresh token in cookie
+        saveUserAndCookie(req, res, current_user);
+      } else {
+        res.send("token expired");
+      }
     }
-  });
+  );
 };
 
 export const saveUserAndCookie = (req, res, current_user) => {
+  console.log("current_user");
+  if (!current_user.username) return;
   try {
     //Creating jwt token
     const access_token = generateAccessToken(
@@ -77,6 +96,11 @@ export const saveUserAndCookie = (req, res, current_user) => {
     );
 
     current_user.refreshToken = refresh_token;
+    const _sendBack = {
+      username: current_user.username,
+      access_token: access_token,
+      id: current_user._id,
+    };
 
     res
       .cookie("jwt", refresh_token, {
@@ -86,11 +110,13 @@ export const saveUserAndCookie = (req, res, current_user) => {
         withCredentials: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
-      .send({ access_token });
+      .status(200);
+    res.send(_sendBack);
 
     current_user.save();
-
-    return access_token;
+    console.log("====finish saving user cookie====", current_user.username);
+    console.log("saved user and return data", _sendBack);
+    return _sendBack;
   } catch (error) {
     return error;
   }
