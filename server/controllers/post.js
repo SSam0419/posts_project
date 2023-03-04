@@ -2,20 +2,14 @@ import PostProfile from "../models/post_profile.js";
 
 export const getAllPosts = async (req, res) => {
   try {
-    // const allPosts = await PostProfile.find({});
     const from = req.body.from;
     const to = req.body.to;
-    const allPosts = await PostProfile.find(
-      {},
-      {},
-      {
-        skip: from, // Starting Row
-        limit: to, // Ending Row
-        sort: {
-          createdAt: -1, //Sort by Date Added DESC
-        },
-      }
-    );
+    const sortMethod = req.body.sort;
+    console.log({ from, to, sortMethod });
+    const allPosts = await PostProfile.find({})
+      .sort(sortMethod)
+      .skip(from)
+      .limit(to);
     res.send(allPosts);
   } catch (error) {
     console.log(error);
@@ -60,4 +54,42 @@ export const addComment = async (req, res) => {
     }
   );
   res.send(result);
+};
+
+export const likePost = async (req, res) => {
+  const username = req.body.username;
+  const post_id = req.body.post_id;
+  try {
+    const result = await PostProfile.updateOne(
+      { _id: post_id },
+      {
+        $push: {
+          likes: username,
+        },
+      }
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error.message);
+    res.sendStatus(400);
+  }
+};
+
+export const viewPost = async (req, res) => {
+  const username = req.body.username;
+  const post_id = req.body.post_id;
+  try {
+    const result = await PostProfile.updateOne(
+      { _id: post_id },
+      {
+        $push: {
+          views: username,
+        },
+      }
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error.message);
+    res.sendStatus(400);
+  }
 };

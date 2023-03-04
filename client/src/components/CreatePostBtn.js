@@ -8,10 +8,11 @@ const CreatePostBtn = () => {
   const [showForm, setShowForm] = useState(false);
   return (
     <div>
-      {showForm && <CreatePostForm />}
+      {showForm && <CreatePostForm setShowForm={setShowForm} />}
       <div className="CreatePostBtn">
         <FaPlusCircle
           size={50}
+          color={"#007ACC"}
           onClick={() => {
             setShowForm((prev) => !prev);
           }}

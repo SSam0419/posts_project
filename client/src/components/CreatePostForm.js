@@ -2,35 +2,26 @@ import React, { useEffect, useState } from "react";
 import "./CreatePostForm.css";
 import Overlay from "./Overlay.js";
 
-import ClipLoader from "react-spinners/ClipLoader";
-
 import RichTextEditor from "./RichTextEditor.js";
 import { createPost } from "../slice/postSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../slice/userSlice";
 
-const CreatePostForm = () => {
+const CreatePostForm = ({ setShowForm }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   const dispatch = useDispatch();
-
-  const override = {
-    display: "flex",
-    justifyContent: "center",
-    alignItem: "center",
-  };
-  const str = "<p>haha</p>";
+  const user = useSelector(selectUser);
 
   const submitHandler = (e) => {
-    console.log(title);
-    console.log(content);
-    dispatch(createPost({ title, content }));
+    const author = user.userProfile.username;
+    dispatch(createPost({ title, content, author }));
   };
 
   return (
-    <Overlay>
-      <div className="CreatePostForm">
-        <div dangerouslySetInnerHTML={{ __html: str }} />
+    <Overlay onClose={() => setShowForm(false)}>
+      <div className="CreatePostForm" onClick={(e) => e.stopPropagation()}>
         <form onSubmit={(e) => submitHandler(e)}>
           <label htmlFor="title">Title</label>
           <input
@@ -46,8 +37,7 @@ const CreatePostForm = () => {
             <RichTextEditor content={content} setContent={setContent} />
           </div>
           <div className="footer">
-            <ClipLoader color="#36d7b7" cssOverride={override} />
-            <button>Cancel</button>
+            <button onClick={() => setShowForm(false)}>Cancel</button>
             <input type="submit" value={"Confirm"} />
           </div>
         </form>

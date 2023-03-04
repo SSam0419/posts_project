@@ -46,7 +46,7 @@ export const verifyAccessToken = async (req, res) => {
             saveUserAndCookie(req, res, current_user);
           }
           if (err) {
-            console.log(err);
+            console.log(err.message);
           }
         }
       );

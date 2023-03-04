@@ -2,10 +2,18 @@ import "./DiscussionPostCard.css";
 import React from "react";
 import { AiOutlineEye, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import DiscussionPostPage from "../pages/DiscussionPostPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../slice/userSlice";
+import { pushViewsIntoState } from "../slice/postSlice";
 
 const DiscussionPostCard = (post) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const isLoggedIn = user.userProfile.isLoggedIn;
+  const username = user.userProfile.username;
+
   let content = post.post.content;
   if (post.post.content.length > 45 * 3) {
     content = content.slice(0, 45 * 3) + " ...";
@@ -20,7 +28,12 @@ const DiscussionPostCard = (post) => {
     <div
       className="DiscussionPostCard"
       onClick={() => {
-        navigate(`${post.post._id}`);
+        if (isLoggedIn) {
+          dispatch(pushViewsIntoState({ username: username }));
+        } else {
+          dispatch(pushViewsIntoState({ username: "guest" }));
+        }
+        navigate(`${post.post._id}`, { state: post });
       }}
     >
       <div className="header">
@@ -29,18 +42,17 @@ const DiscussionPostCard = (post) => {
       </div>
       <div className="line"></div>
       <div className="content" dangerouslySetInnerHTML={{ __html: content }} />
-      {/* <div className="content">{content}</div> */}
       <div className="line"></div>
       <div className="footer">
         <div>
           <span className="likes">
-            <span
-              className="icon like_btn"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <AiOutlineHeart />
+            <span className="icon  ">
+              {isLoggedIn && post.post.likes.includes(username) && (
+                <AiFillHeart />
+              )}
+              {(!isLoggedIn || !post.post.likes.includes(username)) && (
+                <AiOutlineHeart />
+              )}
             </span>
             {post.post.likes.length}
           </span>

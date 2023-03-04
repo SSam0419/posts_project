@@ -51,3 +51,9 @@
   border: 1px solid #cccccc;
   outline: none;
 }
+
+.CreatePostForm .footer button:hover,
+.CreatePostForm .footer input:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}

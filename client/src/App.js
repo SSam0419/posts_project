@@ -21,7 +21,7 @@ function App() {
   useAccessToken();
 
   return (
-    <div>
+    <div className="App">
       <Nav />
       <div className="space"></div>
       <Routes>

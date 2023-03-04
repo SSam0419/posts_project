@@ -12,12 +12,17 @@
   cursor: pointer;
 }
 
-.content {
+.DiscussionPostCard .content {
   margin: 5px 0;
 }
-.header {
+.DiscussionPostCard .header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  padding: 0;
+}
+.DiscussionPostCard .header .author {
+  font-size: 0.5rem;
+  color: rgba(0, 0, 0, 0.568);
 }
 .line {
   background-color: black;

@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   border-radius: 15px;
-  border: 2px solid #eeeff1;
+  background-color: #eeeff1;
   padding: 10px;
   width: 50%;
 }
@@ -21,12 +21,25 @@
   border: none;
   outline: none;
   font-weight: 500;
+  background-color: #eeeff1;
 }
 
 .Sort {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.Sort select:hover,
+.icon:hover {
+  cursor: pointer;
+}
+.Sort select {
+  border: none;
+  outline: none;
+}
+
+.Sort select option {
+  border-radius: 5px;
 }
 
 .TogglePosts {
