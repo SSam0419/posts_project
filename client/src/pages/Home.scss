@@ -1,0 +1,22 @@
+.Home {
+  height: 500px;
+  width: 100%;
+  background-image: url("../Asset/laura-vinck-Hyu76loQLdk-unsplash.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .hero {
+    backdrop-filter: blur(40px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    font-size: 3rem;
+    width: 800px;
+    height: 200px;
+  }
+}

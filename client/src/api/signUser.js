@@ -83,6 +83,7 @@ export const verifyAccessToken = async (token) => {
       .catch(function (error) {
         console.log(error);
       });
+
     return data.data;
   } catch (error) {
     console.log(error);

@@ -8,6 +8,7 @@ const override = {
   left: "50%",
   height: "100%",
   width: "100%",
+  margin: "40px auto",
 };
 
 const PropagateSpinner = () => {

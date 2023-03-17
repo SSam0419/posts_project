@@ -11,6 +11,7 @@ const postSchema = mongoose.Schema({
   content: { type: String, required: true },
   likes: [String],
   views: [String],
+  saved: [String],
   createdAt: {
     type: Date,
     default: new Date(),
@@ -23,6 +24,7 @@ const postSchema = mongoose.Schema({
       likes: [String],
     },
   ],
+  category: { type: String, required: true },
 });
 
 const PostProfile = mongoose.model("postSchema", postSchema);

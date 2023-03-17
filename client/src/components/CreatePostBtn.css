@@ -4,6 +4,9 @@
   right: 1.5%;
   opacity: 1;
   transition: 0.125s ease-in;
+  background-color: #007acc;
+  padding: 15px;
+  border-radius: 50%;
 }
 .CreatePostBtn:hover {
   opacity: 0.6;

@@ -1,0 +1,76 @@
+.CreateFormPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 10px 30px;
+
+  form {
+    background-color: #ffffff;
+    max-width: 1500px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-direction: column;
+    padding: 0;
+    // margin: 0 auto;
+
+    input#title {
+      padding: 16px;
+      border: 1px solid #cccccc;
+      outline: none;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 30px;
+
+      button {
+        border: none;
+        padding: 10px;
+        background-color: white;
+        border: 1px solid black;
+        width: 100%;
+      }
+      button.submit_btn {
+        background-color: #007acc;
+        border: none;
+        color: white;
+        border-radius: 10px;
+        font-size: 1rem;
+        letter-spacing: 1px;
+      }
+
+      button:hover {
+        cursor: pointer;
+        opacity: 0.6;
+      }
+    }
+
+    .selector_main_box,
+    .selector_main_option {
+      padding: 16px;
+    }
+
+    .category_selector_container {
+      border: 1px solid #cccccc;
+    }
+
+    .selector_main_option:hover {
+      background-color: black;
+      color: white;
+    }
+  }
+}
+
+.editor {
+  height: 50%;
+}

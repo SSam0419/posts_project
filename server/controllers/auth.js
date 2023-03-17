@@ -60,6 +60,7 @@ export const verifyAccessToken = async (req, res) => {
 
 export const verifyRefreshToken = async (req, res) => {
   const token = req.cookies?.jwt;
+  if (!token) return;
   console.log("refresh token: ", token);
   jwt.verify(
     token,
@@ -70,6 +71,7 @@ export const verifyRefreshToken = async (req, res) => {
         const current_user = await UserProfile.findOne({
           username: decoded.username,
         });
+        if (!current_user) return;
         console.log("====saving user cookie====", current_user.username);
         //save refresh token in cookie
         saveUserAndCookie(req, res, current_user);
@@ -96,10 +98,16 @@ export const saveUserAndCookie = (req, res, current_user) => {
     );
 
     current_user.refreshToken = refresh_token;
+
     const _sendBack = {
       username: current_user.username,
       access_token: access_token,
       id: current_user._id,
+      isLoggedIn: true,
+      following: current_user.following,
+      followers: current_user.followers,
+      wrotePost: current_user.wrotePost,
+      comments: current_user.comments,
     };
 
     res
@@ -115,7 +123,6 @@ export const saveUserAndCookie = (req, res, current_user) => {
 
     current_user.save();
     console.log("====finish saving user cookie====", current_user.username);
-    console.log("saved user and return data", _sendBack);
     return _sendBack;
   } catch (error) {
     return error;

@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FORM_DATA } from "../actions/constant";
+
 import "./SignUp.css";
 import { signUp } from "../api/signUser";
 
 const SignUp = ({ setSignIn }) => {
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.createUser);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const [confirmPw, setConfirmPw] = useState("");
   const [warning, setWarning] = useState(false);
   const [duplicateUser, setDuplicateUser] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!(confirmPw === userData.password)) return setWarning(true);
+
+    if (!(confirmPw === password)) return setWarning(true);
     try {
-      signUp(userData, setDuplicateUser, setSignIn);
+      signUp(
+        { username: username, password: password },
+        setDuplicateUser,
+        setSignIn
+      );
     } catch (error) {
       console.log(error);
     }
@@ -29,7 +37,7 @@ const SignUp = ({ setSignIn }) => {
           <input
             type={"text"}
             required
-            onChange={(e) => dispatch(FORM_DATA({ username: e.target.value }))}
+            onChange={(e) => setUsername(e.target.value)}
           ></input>
           <span></span>
           <label>Username</label>
@@ -38,7 +46,7 @@ const SignUp = ({ setSignIn }) => {
           <input
             type={"password"}
             required
-            onChange={(e) => dispatch(FORM_DATA({ password: e.target.value }))}
+            onChange={(e) => setPassword(e.target.value)}
           ></input>
           <span></span>
           <label>Password</label>

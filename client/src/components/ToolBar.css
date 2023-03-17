@@ -2,10 +2,42 @@
   display: flex;
   width: 100%;
   align-items: center;
+  justify-content: center;
   gap: 30px;
   margin-bottom: 50px;
+  flex-direction: column;
 }
-
+.ToolBar .CategoryBar ul {
+  position: relative;
+}
+.ToolBar .CategoryBar li {
+  padding: 10px;
+  transition: 0.35s;
+}
+.ToolBar .CategoryBar li:hover {
+  cursor: pointer;
+}
+.ToolBar .slide {
+  position: absolute;
+  /* width: 100px; */
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-color: black;
+  transition: 0.35s;
+}
+.ToolBar .CategoryBar .active {
+  background-color: black;
+  color: white;
+}
+.ToolBar .second_row {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 .SearchBar {
   display: flex;
   align-items: center;
@@ -110,3 +142,17 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.write_post_link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.container_links_user a:hover {
+  opacity: 0.7;
+}
+/* img,
+svg {
+  vertical-align: middle;
+  margin: 0 ;
+} */

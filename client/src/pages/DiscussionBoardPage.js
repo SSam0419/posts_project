@@ -5,16 +5,16 @@ import DiscussionPostCard from "../components/DiscussionPostCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllPosts,
-  getPostsError,
   getPostsStatus,
   fetchPostsWithLimit,
   getPostsLoadCount,
   getPostsHasMore,
   cleanPosts,
+  setFullscreenState,
 } from "../slice/postSlice";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import PropagateSpinner from "../components/PropagateSpinner";
-import CreatePostBtn from "../components/CreatePostBtn";
+import * as category from "../constant/PostCategory.js";
 
 const DiscussionBoardPage = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,11 @@ const DiscussionBoardPage = () => {
   const [sortOption, setSortOption] = useState("createdAt");
   const [order, setOrder] = useState(-1);
 
+  const [displayGrid, setDisplayGrid] = useState(true);
+
   const shouldDispatch = useRef(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (postStatus === "idle" && shouldDispatch.current) {
@@ -72,6 +76,7 @@ const DiscussionBoardPage = () => {
   }, [sortOption, order]);
 
   const observer = useRef();
+
   const loaderRef = useCallback(
     (node) => {
       if (postStatus === "loading") return;
@@ -86,6 +91,8 @@ const DiscussionBoardPage = () => {
     [postStatus, hasMore]
   );
 
+  const [activeCate, setActiveCate] = useState(category.latestTechnology.var);
+
   return (
     <div className="DiscussionBoardPage">
       <ToolBar
@@ -93,26 +100,39 @@ const DiscussionBoardPage = () => {
         setSortOption={setSortOption}
         order={order}
         setOrder={setOrder}
+        displayGrid={displayGrid}
+        setDisplayGrid={setDisplayGrid}
+        activeCate={activeCate}
+        setActiveCate={setActiveCate}
       />
-      <div className="card_container">
+      <div className={`${displayGrid ? "grid" : "row"}`}>
         {posts.length > 0 &&
           posts
-            ?.filter(
+            ?.filter((post) => post.category == activeCate)
+            .filter(
               (post) =>
                 post.author.toLowerCase().includes(filter.toLowerCase()) ||
                 post.title.toLowerCase().includes(filter.toLowerCase()) ||
                 post.content.toLowerCase().includes(filter.toLowerCase())
             )
             .map((post, idx) => {
-              return <DiscussionPostCard post={post} key={idx} />;
+              return (
+                <div className={`${displayGrid ? "grid_card" : "row_card"}`}>
+                  <DiscussionPostCard post={post} key={idx} />
+                </div>
+              );
             })}
       </div>
+
       <div ref={loaderRef}></div>
-      {(postStatus === "idle" || postStatus === "loading") && (
-        <PropagateSpinner />
-      )}
-      <CreatePostBtn />
+
       <Outlet />
+
+      {(postStatus === "idle" || postStatus === "loading" || hasMore) && (
+        <div>
+          <PropagateSpinner />
+        </div>
+      )}
     </div>
   );
 };

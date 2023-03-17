@@ -1,0 +1,66 @@
+@import "../index.scss";
+
+.Nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: #eeeff1;
+  height: 100px;
+  align-items: center;
+  padding: 0 30px;
+  color: #1e1e1e;
+  position: sticky;
+  width: 100%;
+  margin-bottom: 50px;
+  top: 0;
+  z-index: 100;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.Nav ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+.Nav .container_links_user {
+  display: flex;
+  align-items: center;
+}
+.Nav .container_links_user .user_account_avator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-left: 5px;
+}
+ul {
+  text-decoration: none;
+  list-style: none;
+  display: flex;
+  gap: 14px;
+}
+li {
+  list-style: none;
+  text-decoration: none;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.active a {
+  color: $active_blue;
+  border-bottom: 2px solid $active_blue;
+}
+
+.Nav .userProfileSetting {
+  position: absolute;
+  height: 250px;
+  width: 200px;
+  top: 105px;
+  right: 30px;
+  transition: 0.2s ease-in;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.Nav .user_account_avator:hover {
+  cursor: pointer;
+}

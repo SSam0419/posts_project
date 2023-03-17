@@ -67,7 +67,7 @@ export const sign_up = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const { username } = req.query;
+    const { username } = req.params;
     console.log(`user : ${username} is logging out ... `);
     const current_user = await UserProfile.findOne({
       username: username,
@@ -82,5 +82,72 @@ export const logout = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.send(error.message);
+  }
+};
+
+export const visitUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const current_user = await UserProfile.findOne({
+      username: userId,
+    });
+    if (!current_user) {
+      res.status(404).send("user not found.");
+    }
+    res.status(200).send(current_user);
+  } catch (error) {
+    res.sendStatus(500).send(error);
+  }
+};
+
+export const followUser = async (req, res) => {
+  try {
+    const fromThisUser = req.body.fromThisUser;
+    const toThatUser = req.body.toThatUser;
+
+    await UserProfile.findOneAndUpdate(
+      {
+        username: fromThisUser,
+      },
+      {
+        $push: {
+          following: toThatUser,
+        },
+      }
+    ).catch(function (err) {
+      return res.json(err);
+    });
+
+    await UserProfile.findOneAndUpdate(
+      {
+        username: toThatUser,
+      },
+      {
+        $push: {
+          followers: fromThisUser,
+        },
+      }
+    ).catch(function (err) {
+      return res.json(err);
+    });
+  } catch (error) {
+    res.sendStatus(500).send(error);
+  }
+};
+
+export const addProfileComment = async (req, res) => {
+  try {
+    const body = req.body.comment;
+    const result = await UserProfile.updateOne(
+      { username: req.body.username },
+      {
+        $push: {
+          comments: { $each: [body], $position: 0 },
+        },
+      }
+    );
+    res.send(result);
+  } catch (error) {
+    res.send(error);
   }
 };

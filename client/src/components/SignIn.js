@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./SignIn.css";
 import { signIn, selectUser } from "../slice/userSlice";
@@ -11,10 +12,14 @@ const SignIn = ({ setSignIn }) => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(signIn(userData));
+      dispatch(signIn(userData)).then((res) => {
+        if (res.meta.requestStatus === "fulfilled") navigate("/");
+      });
     } catch (error) {
       console.log(error);
     }
@@ -47,10 +52,10 @@ const SignIn = ({ setSignIn }) => {
           <label>Password</label>
         </div>
         <div className="warning">
-          {userProfile.error == "wrong username" && "wrong username"}
+          {userProfile.error === "wrong username" && "wrong username"}
         </div>
         <div className="warning">
-          {userProfile.error == "wrong password" && "wrong password"}
+          {userProfile.error === "wrong password" && "wrong password"}
         </div>
         <div className="forget_password">Forget Password?</div>
         <input type={"submit"} value={"Login"} />

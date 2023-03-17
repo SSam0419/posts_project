@@ -1,11 +1,10 @@
-import "./DiscussionPostCard.css";
+import "./DiscussionPostCard.scss";
 import React from "react";
 import { AiOutlineEye, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import DiscussionPostPage from "../pages/DiscussionPostPage";
-import { useNavigate, useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../slice/userSlice";
-import { pushViewsIntoState } from "../slice/postSlice";
+import { pushViewsIntoState, viewPost } from "../slice/postSlice";
 
 const DiscussionPostCard = (post) => {
   const navigate = useNavigate();
@@ -16,6 +15,7 @@ const DiscussionPostCard = (post) => {
 
   let content = post.post.content;
   if (post.post.content.length > 45 * 3) {
+    content = content.replaceAll("<br>", "");
     content = content.slice(0, 45 * 3) + " ...";
   }
   const options = {
@@ -24,25 +24,32 @@ const DiscussionPostCard = (post) => {
     day: "numeric",
   };
   const date = new Date(post.post.createdAt);
+
   return (
     <div
-      className="DiscussionPostCard"
+      className={`DiscussionPostCard`}
       onClick={() => {
         if (isLoggedIn) {
-          dispatch(pushViewsIntoState({ username: username }));
+          dispatch(
+            pushViewsIntoState({ username: username, post_id: post.post._id })
+          );
+          dispatch(viewPost({ username: username, post_id: post.post._id }));
         } else {
-          dispatch(pushViewsIntoState({ username: "guest" }));
+          dispatch(
+            pushViewsIntoState({ username: "guest", post_id: post.post._id })
+          );
+          dispatch(viewPost({ username: "guest", post_id: post.post._id }));
         }
-        navigate(`${post.post._id}`, { state: post });
+        navigate(`/post/${post.post._id}`, { state: post });
       }}
     >
       <div className="header">
         <span className="title">{post.post.title}</span>
         <span className="author">{post.post.author}</span>
       </div>
-      <div className="line"></div>
+      {/* <div className="line"></div> */}
       <div className="content" dangerouslySetInnerHTML={{ __html: content }} />
-      <div className="line"></div>
+      {/* <div className="line"></div> */}
       <div className="footer">
         <div>
           <span className="likes">

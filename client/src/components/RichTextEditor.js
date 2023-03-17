@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./RichTextEditor.css";
 
-const Editor = ({ content, setContent }) => {
+const Editor = ({ content, editorHandler }) => {
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -44,7 +44,7 @@ const Editor = ({ content, setContent }) => {
       modules={modules}
       formats={formats}
       value={content}
-      onChange={setContent}
+      onChange={editorHandler}
     ></ReactQuill>
   );
 };

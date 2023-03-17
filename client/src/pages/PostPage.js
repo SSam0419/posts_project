@@ -11,20 +11,30 @@ import {
   pushCommentIntoState,
   likePost,
   pushLikesIntoState,
+  setFullscreenState,
+  dislikePost,
+  pullLikesFromState,
 } from "../slice/postSlice";
 
-import { AiOutlineEye, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { RxCross1 } from "react-icons/rx";
-import { AiOutlineCheck } from "react-icons/ai";
+import {
+  AiOutlineEye,
+  AiOutlineHeart,
+  AiFillHeart,
+  AiOutlineArrowLeft,
+} from "react-icons/ai";
+import { RxAvatar } from "react-icons/rx";
 
-import "./DiscussionPostPage.css";
 import Overlay from "../components/Overlay";
 import { selectUser } from "../slice/userSlice.js";
-
 import { ToastContainer, toast } from "react-toastify";
+
+import "./PostPage.scss";
 import "react-toastify/dist/ReactToastify.css";
 
-const DiscussionPostPage = () => {
+import PostCommentForm from "../components/PostCommentForm.js";
+import CommentCard from "../components/CommentCard.js";
+
+const PostPage = () => {
   let { post_id } = useParams();
 
   const dispatch = useDispatch();
@@ -33,6 +43,8 @@ const DiscussionPostPage = () => {
 
   const [post, setPost] = useState({});
   const [comment, setComment] = useState("");
+  const [like, setLike] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   const notify = (str) =>
     toast.error(`Log In to ${str}`, {
@@ -73,6 +85,12 @@ const DiscussionPostPage = () => {
     }
   }, [postStatus, dispatch, post_id]);
 
+  useEffect(() => {
+    dispatch(setFullscreenState(true));
+    setLike(post?.likes?.includes(user?.userProfile?.username));
+    setLikeCount(post?.likes?.length);
+  }, [post]);
+
   const options = {
     year: "numeric",
     month: "long",
@@ -110,6 +128,7 @@ const DiscussionPostPage = () => {
     <Overlay
       onClose={() => {
         navigate("/post");
+        dispatch(setFullscreenState(false));
       }}
     >
       <ToastContainer
@@ -125,49 +144,77 @@ const DiscussionPostPage = () => {
         theme="light"
       />
       <div
-        className="DiscussionPostPage"
+        className="PostPage"
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
         <div className="container">
           <div className="header">
-            <div className="title_author">
-              <span className="title">{post.title}</span>
-              <span className="author">{post.author}</span>
+            <div>
+              <button
+                onClick={() => {
+                  dispatch(setFullscreenState(false));
+                  navigate(-1);
+                }}
+              >
+                <AiOutlineArrowLeft size={25} />
+              </button>
             </div>
-            <button
+
+            <div
+              className="author"
               onClick={() => {
-                navigate(-1);
+                dispatch(setFullscreenState(false));
+                navigate("/visit_user_profile/" + post.author);
               }}
             >
-              <RxCross1 />
-            </button>
+              <span className="icon">
+                <RxAvatar size={20} />
+              </span>
+              <span>{post.author}</span>
+            </div>
           </div>
-          <div className="line"></div>
-          <div
-            className="content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          <div className="content">
+            <div className="title">{post.title}</div>
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          </div>
+
           <div className="footer">
             <div>
               <span className="likes">
-                {post?.likes?.includes(user?.userProfile?.username) && (
-                  <AiFillHeart color="red" />
+                {like && (
+                  <AiFillHeart
+                    className="icon"
+                    color="red"
+                    onClick={() => {
+                      setLike(false);
+                      setLikeCount((prev) => prev - 1);
+                      dispatch(
+                        dislikePost({
+                          username: user?.userProfile?.username,
+                          post_id: post_id,
+                        })
+                      );
+                      dispatch(
+                        pullLikesFromState({
+                          username: user?.userProfile?.username,
+                          post_id: post_id,
+                        })
+                      );
+                    }}
+                  />
                 )}
-
                 <span className="icon like_btn">
-                  {!post?.likes?.includes(user?.userProfile?.username) && (
+                  {!like && (
                     <AiOutlineHeart
                       onClick={() => {
+                        setLike(true);
+                        setLikeCount((prev) => prev + 1);
                         if (!user?.userProfile?.isLoggedIn) {
                           notify("like the post!");
                           return;
                         } else {
-                          console.log({
-                            username: user?.userProfile?.username,
-                            post_id: post_id,
-                          });
                           dispatch(
                             likePost({
                               username: user?.userProfile?.username,
@@ -185,7 +232,7 @@ const DiscussionPostPage = () => {
                     />
                   )}
                 </span>
-                {post?.likes?.length}
+                {likeCount}
               </span>
               <span className="views">
                 <span className="icon">
@@ -198,67 +245,25 @@ const DiscussionPostPage = () => {
               {_date.toLocaleDateString("en-US", options)}
             </div>
           </div>
-          <div className="line"></div>
-
-          <form
-            className="comment_form"
-            onClick={(e) => {
-              e.stopPropagation();
-
-              if (!user.userProfile.isLoggedIn) {
-                notify("comment!");
-              }
-            }}
-            onSubmit={(e) => handleCommentSubmit(e)}
-          >
-            <input
-              placeholder="type your comment ..."
-              type={"text"}
-              required
-              value={comment}
-              maxLength="100"
-              onChange={(e) => {
-                setComment(e.target.value);
-              }}
-              disabled={!user.userProfile.isLoggedIn}
-            ></input>
-            <button
-              type="submit"
-              className="comment_btn"
-              disabled={!user.userProfile.isLoggedIn}
-              onClick={(e) => {
-                if (comment.trim() == "") {
-                  setComment("");
-                  return;
-                }
-              }}
-            >
-              <AiOutlineCheck />
-            </button>
-          </form>
+          <PostCommentForm
+            handleCommentSubmit={handleCommentSubmit}
+            comment={comment}
+            setComment={setComment}
+            notify={notify}
+          />
 
           <div className="comments_container">
             {post?.comments?.length == 0 && "no comment yet"}
             {post?.comments?.map((comment, idx) => {
-              const _date = new Date(comment.date);
+              let _date = new Date(comment.date);
+              _date = _date.toLocaleDateString("en-US", options);
               return (
-                <div className="comment_card" key={idx}>
-                  <div className="header">
-                    <div className="comment_author">{comment.author}</div>
-                    <div className="comment_date">
-                      {_date.toLocaleDateString("en-US", options)}
-                    </div>
-                  </div>
-                  <div className="comment_content">{comment.content}</div>
-                  <div className="footer">
-                    <div className="comment_likes">
-                      <span className="icon like_btn">
-                        <AiOutlineHeart />
-                      </span>
-                      {comment.likes.length}
-                    </div>
-                  </div>
-                </div>
+                <CommentCard
+                  length={post?.comments?.length}
+                  idx={idx}
+                  comment={comment}
+                  _date={_date}
+                />
               );
             })}
           </div>
@@ -268,4 +273,4 @@ const DiscussionPostPage = () => {
   );
 };
 
-export default DiscussionPostPage;
+export default PostPage;

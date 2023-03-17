@@ -16,18 +16,19 @@ import axios from "axios";
 
 const baseURL = "http://localhost:5000";
 
-const getAllPostURL = "/posts/get_posts_with_limit";
-const getSinglePostURL = "/posts/get_post_by_id";
+const fetchPostFeedURL = "/posts/get_posts_with_limit";
 const creatPostURL = "/posts/create_post";
 const addPostCommentURL = "/posts/create_comment";
 const likePostURL = "/posts/like_post";
-const viewPostURL = "./posts/view_post";
+const dislikePostURL = "/posts/dislike_post";
+const viewPostURL = "/posts/view_post";
+const getMantPostsURL = "/posts/get_many_posts_by_id";
 
 export const fetchPostsWithLimit = createAsyncThunk(
   "posts/fetchPostsWithLimit",
   async ({ from, to, sort }) => {
     try {
-      const result = await axios.post(baseURL + getAllPostURL, {
+      const result = await axios.post(baseURL + fetchPostFeedURL, {
         from: from,
         to: to,
         sort: sort,
@@ -39,16 +40,45 @@ export const fetchPostsWithLimit = createAsyncThunk(
   }
 );
 
+export const fetchPostsWithIds = createAsyncThunk(
+  "post/fetchPostsWithIds",
+  async (ids) => {
+    const url = baseURL + getMantPostsURL;
+    try {
+      const records = await axios.post(url, { ids: ids });
+      return records;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+
 export const createPost = createAsyncThunk(
   "posts/createPost",
-  async ({ title, content, author }) => {
+  async ({ title, content, author, category, authorId }) => {
     try {
       const result = await axios.post(baseURL + creatPostURL, {
         title: title,
         content: content,
         author: author,
+        category: category,
+        authorId: authorId,
       });
       return result.data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+export const dislikePost = createAsyncThunk(
+  "posts/dislikePost",
+  async ({ username, post_id }) => {
+    try {
+      console.log({ username, post_id });
+      await axios.post(baseURL + dislikePostURL, {
+        username: username,
+        post_id: post_id,
+      });
     } catch (error) {
       return error.message;
     }
@@ -99,13 +129,17 @@ const initialState = {
   status: "idle",
   error: null,
   hasMore: true,
-  loadCount: 15,
+  loadCount: 40,
+  fullscreen: false,
 };
 
 const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
+    setFullscreenState: (state, action) => {
+      state.fullscreen = action.payload;
+    },
     cleanPosts: (state, action) => {
       state.posts = [];
     },
@@ -124,7 +158,6 @@ const postSlice = createSlice({
     pushLikesIntoState: (state, action) => {
       state.posts = state.posts.map((post) => {
         if (post._id === action.payload.post_id) {
-          console.log("add like");
           return {
             ...post,
             likes: [action.payload.username, ...post.likes],
@@ -133,9 +166,23 @@ const postSlice = createSlice({
         return post;
       });
     },
+    pullLikesFromState: (state, action) => {
+      state.posts = state.posts.map((post) => {
+        if (post._id === action.payload.post_id) {
+          let newLikes = post.likes.filter(
+            (like) => like !== action.payload.username
+          );
+          return {
+            ...post,
+            likes: newLikes,
+          };
+        }
+        return post;
+      });
+    },
     pushViewsIntoState: (state, action) => {
       state.posts = state.posts.map((post) => {
-        if (post.id === action.payload.id) {
+        if (post._id === action.payload.post_id) {
           return {
             ...post,
             views: [action.payload.username, ...post.views],
@@ -178,12 +225,15 @@ export const getPostsStatus = (state) => state.post.status;
 export const getPostsError = (state) => state.post.error;
 export const getPostsLoadCount = (state) => state.post.loadCount;
 export const getPostsHasMore = (state) => state.post.hasMore;
+export const getFullscreenState = (state) => state.post.fullscreen;
 
 export const {
   cleanPosts,
   pushCommentIntoState,
   pushLikesIntoState,
   pushViewsIntoState,
+  setFullscreenState,
+  pullLikesFromState,
 } = postSlice.actions;
 
 export default postSlice.reducer;

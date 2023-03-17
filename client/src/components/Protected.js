@@ -1,8 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { selectUser } from "../slice/userSlice";
 
-function Protected({ isLogged, children }) {
-  if (!isLogged) {
+function Protected({ children }) {
+  const user = useSelector(selectUser);
+
+  if (!user.userProfile.isLoggedIn) {
     return <Navigate to="/" replace />;
   }
   return children;

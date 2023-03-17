@@ -1,0 +1,23 @@
+.PostCreatePostForm {
+  .comment_form {
+    width: 100%;
+    display: flex;
+    margin: 0;
+    outline: 1px solid #c1c1c1;
+    padding: 0;
+    height: 40px;
+    margin: 0 auto;
+    max-width: 1000px;
+  }
+  .comment_form button {
+    background-color: #007acc;
+    color: white;
+    border-radius: 0;
+  }
+  .comment_form input {
+    width: 100%;
+    border: none;
+    padding: 5px 10px;
+    outline: none;
+  }
+}
